@@ -1,0 +1,434 @@
+
+<!-- saved from url=(0050)https://mrl.nyu.edu/~perlin/courses/fall2015/1028/ -->
+<html class=""><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><style type="text/css"></style><style type="text/css">.fancybox-margin{margin-right:0px;}</style><link rel="stylesheet" type="text/css" href="chrome-extension://pkehgijcmpdhfbdbbnkijodmdjhbjlgp/skin/socialwidgets.css"></head><body><hr color="white" size="75"><table><tbody><tr><td width="75"></td><td>
+<font face="helvetica">
+<center><big><b>
+
+Notes for October 28 class -- Introduction to splines
+
+</b></big></center>
+<hr color="white" size="50">
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<p><b>Splines</b></p><p>
+</p><blockquote>
+There are many reasons we might want to create
+smooth controllable curves in computer graphics.
+Perhaps we might want to create an organic shape,
+or animate something along a continuous path.
+<p>
+As you can see on the right, we can do this
+by breaking down our smooth curve into simpler
+pieces.
+</p><p>
+If we think of the spline curve as a path of motion,
+each of these pieces must match its neighbors in both
+position and rate, which means that for each
+coordinate x and y, we need four values:
+a position at both the start and the end,
+and a rate (or derivative) at both the start and the end.
+</p><p>
+The smallest order polynomial that can
+satisfy four constraints is a cubic.
+So we describe both the x and y coordinates of
+each piece using
+<i>parametric cubic</i> polynomials in parameter t:
+</p><blockquote>
+x = a<sub>x</sub>t<sup>3</sup> +
+    b<sub>x</sub>t<sup>2</sup> +
+    c<sub>x</sub>t + d<sub>x</sub>
+<p>
+y = a<sub>y</sub>t<sup>3</sup> +
+    b<sub>y</sub>t<sup>2</sup> +
+    c<sub>y</sub>t + d<sub>y</sub>
+</p></blockquote>
+where (a<sub>x</sub>, b<sub>x</sub>, c<sub>x</sub>, d<sub>x</sub>)
+and (a<sub>y</sub>, b<sub>y</sub>, c<sub>y</sub>, d<sub>y</sub>)
+are constant valued polynomial coefficients,
+and t varies from t = 0 to t = 1 along
+the curve.
+</blockquote>
+</font></td>
+<td width="50">&nbsp;</td><td width="300">
+<img src="./1028_files/spline.png" width="300">
+</td>
+</tr></tbody></table>
+<p>&nbsp;</p><p></p><hr>&nbsp;<p>
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<p><b>Cubic splines</b></p><p>
+</p><blockquote>
+Although it is technically true that
+cubic splines can be designed by tweaking
+their polynial coefficients, in practice
+that doesn't usually work out very well.
+<p>
+As you can see in the example on the right,
+there is no intuitive connection between
+the shape of a cubic polynomial and the values of its
+four coefficients --
+in this case 7.7, -11.7, 5.0 and -0.6, respectively,
+for the
+t<sup>3</sup>,
+t<sup>2</sup>, t and constant term.
+</p><p>
+For that reason, we need a better way to specify cubic spline curves.
+Rather than use
+t<sup>3</sup>,
+t<sup>2</sup>, t and 1 as our four <i>basis functions</i>,
+we can use four different basis functions that have
+a more intuitive geometric meaning.
+</p><p>
+In the following sections we will look at two
+different examples of such alternate basis functions.
+</p></blockquote>
+</font></td>
+<td width="50">&nbsp;</td><td width="300">
+<img src="./1028_files/cubic.png" width="300">
+</td>
+</tr></tbody></table>
+</p><p>&nbsp;</p><p></p><hr>&nbsp;<p>
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<p><b>Hermite splines, part 1</b></p><p>
+</p><blockquote>
+We can choose four basis functions
+that give us independent control over the position
+at t = 0 and t = 1,
+as well as the rate of change
+at t = 0 and t = 1.
+This is called the <i>Hermite</i> basis,
+after the french mathematician who devised it.
+<p>
+If we want a curve with position A at t = 0,
+position B at t = 1,
+rate C at t = 0,
+and rate D at t = 1,
+we can use the four functions to the right
+to compute the cubic polynomial we are looking for.
+</p><p>
+</p></blockquote>
+</font></td>
+<td width="50">&nbsp;</td><td width="200"><center>
+<b>Position</b><p>
+<img src="./1028_files/hermiteP0.png" width="200"><br>2t<sup>3</sup> - 3t<sup>2</sup> + 1</p><p>
+<img src="./1028_files/hermiteP1.png" width="200"><br>-2t<sup>3</sup> + 3t<sup>2</sup>
+</p></center></td>
+<td width="200"><center>
+<b>Rate</b><p>
+<img src="./1028_files/hermiteR0.png" width="200"><br>t<sup>3</sup> - 2t<sup>2</sup> + t</p><p>
+<img src="./1028_files/hermiteR1.png" width="200"><br>t<sup>3</sup> - t<sup>2</sup>
+</p></center></td>
+</tr></tbody></table>
+</p><p>&nbsp;</p><p></p><hr>&nbsp;<p>
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<p><b>Hermite splines, part 2</b></p><p>
+</p><blockquote>
+Because these four hermite basis polynomials never change,
+and the cubic polynomial we want is just a weighted sum of those four polynomials,
+we can express this weighted sum as a multiplication of the weights
+by a matrix, which we call the <i>Hermite matrix</i>.
+<p>
+In other words, the expression:
+</p><blockquote>
+A (2t<sup>3</sup> - 3t<sup>2</sup> + 1) +
+B (-2t<sup>3</sup> + 3t<sup>2</sup>) +
+C (t<sup>3</sup> - 3t<sup>2</sup> + t) +
+D (t<sup>3</sup> - t<sup>2</sup>)
+</blockquote>
+can be expressed as a matrix vector product:
+<blockquote>
+<table><tbody><tr>
+<td>
+a<p>
+b</p><p>
+c</p><p>
+d
+</p></td>
+<td width="20"></td>
+<td>
+=
+</td>
+<td width="20"></td>
+<th><img src="./1028_files/Hermite.png" width="130"></th>
+<td width="10"></td>
+<td>
+<font size="1"><br></font>
+A<p>
+B</p><p>
+C</p><p>
+D
+</p></td>
+</tr></tbody></table>
+</blockquote>
+to convert positions and rates at the two ends into the desired cubic polynomial:
+<blockquote>
+at<sup>3</sup> + bt<sup>2</sup> + ct + d.
+</blockquote>
+</blockquote>
+</font></td></tr></tbody></table>
+</p><p>&nbsp;</p><p></p><hr>&nbsp;<p>
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<p><b>Bezier splines, part 1</b></p><p>
+</p><blockquote>
+Artists and designers often find it more convenient
+to create splines by moving points around, rather
+than needing to deal with derivatives.
+The <i>Bezier</i> spline enables designers
+of spline curves
+to work this way.
+<p>
+Bezier splines work by repeated linear interpolation.
+For example, the image to the right shows a simplified
+version of a Bezier spline, using three key points
+to specify a parametric quadratic spline.
+</p><p>
+Note that points along the curve are
+found as a linear interpolation of linear interpolations.
+We first find points along the edges AB and BC
+by linear interpolations (to get the points represented as blue dots):
+</p><blockquote>
+<font color="blue">(1-t) A + t B</font>
+<p>
+<font color="blue">(1-t) B + t C</font>
+</p></blockquote>
+and then we interpolate again (to get the point represented as a red dot):
+<blockquote>
+<font color="red">P = </font>
+(1-t) (
+<font color="blue">(1-t) A + t B</font>
+)
+<font color="red">+</font>
+t
+(
+<font color="blue">(1-t) B + t C</font>
+)
+</blockquote>
+If we multiply out all the terms, we get:
+<blockquote>
+A (1-t)<sup>2</sup> + 2 B (1-t) t + C t<sup>2</sup>
+</blockquote>
+Note that the weights of the coefficients (1 2 1) follow Pascal's triangle.
+</blockquote>
+</font></td>
+<td width="50">&nbsp;</td><td width="400">
+<img src="./1028_files/bezier2.png" width="400">
+</td>
+</tr></tbody></table>
+</p><p>&nbsp;</p><p></p><hr>&nbsp;<p>
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<p><b>Bezier splines, part 2</b></p><p>
+</p><blockquote>
+Now it becomes easier to see what is going on with the full
+parametric cubic Bezier spline,
+which uses four key points:
+The basic set-up is a
+linear interpololation of
+linear interpolations of
+linear interpolations.
+<p>
+So we start with the points in blue:
+</p><blockquote>
+<font color="blue">P = </font>(1-t) A + t B
+<p>
+<font color="blue">Q = </font>(1-t) B + t C
+</p><p>
+<font color="blue">R = </font>(1-t) C + t D
+</p></blockquote>
+When the first and second terms are linearly interpolated,
+we get the two dots in violet:
+<blockquote>
+<font color="violet">S = </font>(1-t) <font color="blue">P</font> + t <font color="blue">Q</font>
+<p>
+<font color="violet">T = </font>(1-t) <font color="blue">Q</font> + t <font color="blue">R</font>
+</p></blockquote>
+Finally we linearly interpolate these two points:
+(1-t) <font color="violet">S</font> + t <font color="violet">T</font>
+<p>
+When we multiply everything out, writing the equation in terms of
+our original four key points A,B,C and D,
+the weights form the next level (1 3 3 1) of Pascal's triangle:
+</p><blockquote>
+A (1-t)<sup>3</sup> + 3 B (1-t)<sup>2</sup> t + 3 C (1-t) t<sup>2</sup> + D t<sup>3</sup>
+</blockquote>
+</blockquote>
+</font></td>
+<td width="50">&nbsp;</td><td width="400">
+<img src="./1028_files/bezier3.png" width="400">
+</td>
+</tr></tbody></table>
+</p><p>&nbsp;</p><p></p><hr>&nbsp;<p>
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<p><b>Bezier splines, part 3</b></p><p>
+</p><blockquote>
+We can multiply out the terms of the above polynomial,
+and regroup by powers of t, to get:
+<blockquote>
+(-A + 3B - 3C + D) t<sup>3</sup> +
+(3A - 6B + 3C) t<sup>2</sup> +
+(-3A + 3B) t +
+D
+</blockquote>
+<p>
+This makes it easy to see that,
+as was the case for Hermite splines, the Bezier spline has a characteristic
+matrix, which 
+can be used to translate the above polynomial until the
+standard cubic polynomial, with coefficients, (a,b,c,d):
+</p><blockquote>
+<table><tbody><tr>
+<td>
+a<p>
+b</p><p>
+c</p><p>
+d
+</p></td>
+<td width="20"></td>
+<td>
+=
+</td>
+<td width="20"></td>
+<th><img src="./1028_files/Bezier.png" width="130"></th>
+<td width="10"></td>
+<td>
+A<p>
+B</p><p>
+C</p><p>
+D
+</p></td>
+</tr></tbody></table>
+</blockquote>
+One powerful property of Bezier splines is that the
+direction between A and B determines the direction of the
+spline curve at t=0, and the
+direction between C and D determines the direction of the
+spline curve at t=1.
+<p>
+This makes it easy to match up splines end-to-end,
+so that the resulting composite curve has a continuous derivative.
+</p></blockquote>
+</font></td></tr></tbody></table>
+</p><p>&nbsp;</p><p></p><hr>&nbsp;<p>
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<p><b>Perspective</b></p><p>
+</p><blockquote>
+As we mentioned in class, you can implement perspective by
+doing the following just before you do the viewport transform:
+<ol>
+<li>Translate all vertices by (0,0,-f), so that your scene is centered at z=-f,
+where f is the "focal length" of the virtual camera.
+<p>
+</p></li><li>Apply the following transformation to each vertex:
+<blockquote>
+   x &#8594; fx/z
+<br>
+   y &#8594; fy/z
+<br>
+   z &#8594; f/z
+</blockquote></li></ol>
+
+<p>
+
+As I mentioned in class, we know that step 2 above is a linear transformation,
+because it is equivalent to the following matrix transformation:
+
+</p><blockquote>
+<table border="0">
+<tbody><tr><th width="30">1 </th><th width="30">0 </th><th width="30">0 </th><th width="30">0 </th></tr>
+<tr><th width="30">0 </th><th width="30">1 </th><th width="30">0 </th><th width="30">0 </th></tr>
+<tr><th width="30">0 </th><th width="30">0 </th><th width="30">0 </th><th width="30">1 </th></tr>
+<tr><th width="30">0 </th><th width="30">0 </th><th width="30">1/f </th><th width="30">0 </th></tr>
+</tbody></table>
+</blockquote>
+
+</blockquote>
+
+</font></td></tr></tbody></table>
+</p><p>&nbsp;</p><p></p><hr>&nbsp;<p>
+
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<p><b>Object hierarchy</b></p><p>
+</p><blockquote>
+I am not going to ask you to do anything yet with object hierarchy
+for your homework this week, but I do want you to understand what it is.
+Essentially, we can describe an entire renderable scene as a tree of
+objects, each of which has the following structure:
+
+<pre>   Object3D
+      Geometry
+         vertices
+	 edges or faces
+      Material
+      Matrix
+      Object3D children[...]
+</pre>
+</blockquote>
+</font></td></tr></tbody></table>
+</p><p>&nbsp;</p><p></p><hr>&nbsp;<p>
+
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<p><b>Homework, due by start of class on Wednesday November 4</b></p><p>
+</p><blockquote>
+<ul>
+<li>
+Animate the shapes you have already made by using time-varying
+spline curves, using both
+Hermite and the Bezier techniques.
+You can use the values of the splines to feed into the
+parameters of the translate, rotate and scale primitives that
+you have already implemented.
+<p>
+Use your spline-based animation software to make interesting and compelling animations.
+Do perspective.
+</p><p>
+
+</p></li><li>
+Create your own curve editor, to create either Hermite or Bezier based curves.
+Your editor should allow users to add, move, and delete key points,
+and should allow users to specify whether two adjoining spline
+curves have matching derivatives.
+<p>
+Use your editor to create interesting shapes,
+such as outlines of animals, letters from fonts, or something
+that you think would be cool and fun.
+</p><p>
+
+</p></li></ul>
+</blockquote>
+</font></td>
+</tr></tbody></table>
+</p><p>&nbsp;</p><p></p><hr>&nbsp;<p>
+</p><p>
+
+</p><hr color="white" size="1000">
+</font>
+</td><td width="75">&nbsp;</td></tr></tbody></table>
+
+</body></html>

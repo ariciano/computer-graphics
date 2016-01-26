@@ -1,0 +1,167 @@
+
+<!-- saved from url=(0050)https://mrl.nyu.edu/~perlin/courses/fall2015/1021/ -->
+<html class=""><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><style type="text/css"></style><style type="text/css">.fancybox-margin{margin-right:0px;}</style><link rel="stylesheet" type="text/css" href="chrome-extension://pkehgijcmpdhfbdbbnkijodmdjhbjlgp/skin/socialwidgets.css"></head><body><hr color="white" size="75"><table><tbody><tr><td width="75"></td><td>
+<font face="helvetica">
+<center><big><b>
+
+Notes for October 21 class -- Parametric surfaces
+
+</b></big></center>
+<hr color="white" size="50">
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+
+
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<p><b>Parametric cylinder</b></p><p>
+</p><blockquote>
+You can describe many surfaces parametrically,
+using the two parameters
+0 &#8804; u &#8804; 1 and
+0 &#8804; v &#8804; 1
+to define values of x, y and z over the surface.
+<p>
+For example,
+the open cylindrical section to the right
+is described by:
+</p><blockquote>
+y = cos(&#952;)
+<br>
+x = sin(&#952;)
+<br>
+z = 2 * v - 1
+</blockquote>
+where:
+<blockquote>
+&#952; = 2 &#960; u
+</blockquote>
+</blockquote>
+</font></td>
+<td width="50">&nbsp;</td><td width="300">
+<img src="./webgl-reference-card-1_0_files/cylinder.png" width="300">
+</td>
+</tr></tbody></table>
+<p>&nbsp;</p><p></p><hr>&nbsp;<p>
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<p><b>Parametric sphere</b></p><p>
+</p><blockquote>
+Similarly,
+the longitude / latitude parameterization of a sphere to the right
+is described by:
+<blockquote>
+x = cos(&#966;) * cos(&#952;)
+<br>
+y = cos(&#966;) * sin(&#952;)
+<br>
+z = sin(&#966;)
+</blockquote>
+where:
+<blockquote>
+&#952; = 2 &#960; u
+<br>
+&#966; = &#960; v - &#960; / 2
+</blockquote>
+</blockquote>
+</font></td>
+<td width="50">&nbsp;</td><td width="300">
+<img src="./webgl-reference-card-1_0_files/sphere.png" width="300">
+</td>
+</tr></tbody></table>
+</p><p>&nbsp;</p><p></p><hr>&nbsp;<p>
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<p><b>Parametric torus (donut)</b></p><p>
+</p><blockquote>
+The longitude / latitude parameterization of a torus
+is described by:
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<blockquote>
+x = (1 + r * cos(&#966;)) * cos(&#952;)
+<br>
+y = (1 + r * cos(&#966;)) * sin(&#952;)
+<br>
+z = r * sin(&#966;)
+</blockquote>
+where:
+<blockquote>
+&#952; = 2 &#960; u
+<br>
+&#966; = 2 &#960; v
+<br>
+r = the radius of the "inner tube".
+</blockquote>
+</blockquote>
+</font></td>
+<td width="50">&nbsp;</td><td width="300">
+<img src="./webgl-reference-card-1_0_files/torus.png" width="300">
+</td>
+</tr></tbody></table>
+</p><p>&nbsp;</p><p></p><hr>&nbsp;<p>
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<p><b>Homework, due by start of class on Wednesday October 28</b></p><p>
+</p><blockquote>
+<ul>
+
+<li>
+Implement the parametrized cylinder, sphere and torus.
+<p>
+
+</p></li><li>
+Use these shapes, together with what you already know how to do
+with matrices, to create a scene with some interesting objects
+(eg: people, animals, machines, etc.).
+<p>
+
+See if you can make your scene animated, using the time variable,
+and also responsive to the cursor.
+</p><p>
+
+</p></li><li>
+<i><b>Extra credit:</b></i>
+Modify the cylinder equations so that the resulting surface also
+includes the top and bottom faces of the cylinder.
+<p>
+
+</p></li><li>
+<i><b>Extra credit:</b></i>
+Try to figure how to create
+some other interesting parametric shapes,
+such as cones, or curved tubes, or something shaped like a bottle.
+<p>
+
+</p></li><li>
+<i><b>Extra credit:</b></i>
+Try to vary or vary shapes and/or animations using
+<a href="https://mrl.nyu.edu/~perlin/courses/fall2015/1021/Noise.js">this Javascript implementation of the Noise function</a>.
+<p>
+
+</p></li></ul>
+
+As always, you get extra points for making something that is fun, exciting, beautiful or original.
+
+</blockquote>
+</font></td>
+</tr></tbody></table>
+</p><p>&nbsp;</p><p></p><hr>&nbsp;<p>
+</p><p>
+
+</p><hr color="white" size="1000">
+</font>
+</td><td width="75">&nbsp;</td></tr></tbody></table>
+
+</body></html>

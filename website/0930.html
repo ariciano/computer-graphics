@@ -1,0 +1,376 @@
+
+<!-- saved from url=(0050)https://mrl.nyu.edu/~perlin/courses/fall2015/0930/ -->
+<html class=""><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><style type="text/css"></style><style type="text/css">.fancybox-margin{margin-right:0px;}</style><link rel="stylesheet" type="text/css" href="chrome-extension://pkehgijcmpdhfbdbbnkijodmdjhbjlgp/skin/socialwidgets.css"></head><body><hr color="white" size="75"><table><tbody><tr><td width="75"></td><td>
+<font face="helvetica">
+<center><big><b>
+
+Notes for September 30 class -- More Ray Tracing
+
+</b></big></center>
+<hr color="white" size="50">
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+<table>
+<tbody><tr><td>
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+
+<p><b>Phong model for specular reflection</b></p><p>
+
+</p><blockquote>
+The first really interesting model for surface reflection was developed by Bui-Tong Phong in 1973.
+Before that, computer graphics surfaces were rendered using only diffuse lambert reflection.
+Phong's was the first model that accounted for specular highlights.
+<p>
+The Phong model begins by defining a reflection vector R, which is a reflection of the
+direction to the light source L about the surface normal N.
+</p><p>
+
+As we showed in class, and as you can see from the diagram on the right,
+it is given by:
+
+</p><blockquote>
+   R = 2 (N • L) N - L
+</blockquote>
+
+</blockquote></font></td>
+
+<td width="50">&nbsp;</td><td width="30%">
+<img src="./0930_files/reflect.png" width="300">
+</td>
+
+</tr></tbody></table>
+
+</td></tr>
+<tr><td>
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+<blockquote>
+
+Once R has been defined, then the Phong model
+approximates the <i>specular</i> component of surface reflectance
+as:
+
+<blockquote>
+   s<sub>rgb</sub> max(0, E • R)<sup>p</sup> )
+</blockquote>
+
+where s<sub>rgb</sub> is the color of specular reflection, p is a specular power,
+and E is the direction to the eye (in our case, E = -W, the
+reverse of the ray direction).
+The larger the specular power p, the "shinier" the surface will appear.
+<p>
+
+To get the complete Phong reflectance, we sum over the lights in the scene:
+
+</p><blockquote>
+a<sub>rgb</sub> +
+<big><big>&#8721;</big></big><sub>i</sub>
+lightColor<sub>i</sub>
+<big><big>(</big></big>
+d<sub>rgb</sub> max(0, N • L<sub>i</sub>) +
+s<sub>rgb</sub> max(0, E • R) <sup>p</sup>
+<big><big>)</big></big>
+</blockquote>
+where
+a<sub>rgb</sub>,
+d<sub>rgb</sub> and
+s<sub>rgb</sub>
+are the ambient, diffuse and specular color,
+respectively, and p is the specular power.
+
+
+</blockquote>
+
+</font></td>
+<td width="50">&nbsp;</td><td width="30%">
+<img src="./0930_files/phong.png" width="300">
+</td>
+
+</tr></tbody></table>
+
+</td></tr>
+</tbody></table>
+
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+
+
+
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+<p><table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+
+<p><b>Blinn model for specular reflection</b></p><p>
+
+</p><blockquote>
+A few years later, Jim Blinn created a variation on the Phong model
+which produced somewhat more realistic highlights in extreme cases
+(when the viewer is looking from an angle that is far from the surface normal).
+<p>
+The Blinn model is also appreciably faster in the special case where we
+approximate E by a constant vector everywhere, and we assume
+that the light direction L is constant throughout the object.
+</p><p>
+The basic idea is that a halfway vector H is defined
+as the normalized midpoint between direction to light L and direction to eye E.
+If E and L are constant, this needs to be done only once for each light source.
+</p><p>
+Then at each pixel, we just take the inner product between N and H:
+</p><blockquote>
+   s<sub>rgb</sub> max(0, N • H)<sup>p</sup>
+</blockquote>
+
+Because H tends to stay relatively near to N, to get the same level
+of specularity the power p needs to be about three times greater
+in the Blinn model than the corresponding value in the Phong model.
+
+</blockquote>
+
+</font></td><td width="50">&nbsp;</td><td width="30%">
+<img src="./0930_files/blinn.png" width="300">
+</td>
+</tr></tbody></table>
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+
+
+
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+</p><p><table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+
+<p><b>Shadows</b></p><p>
+
+</p><blockquote>
+Casting shadows is relatively easy in ray tracing.
+Once we have found a surface point S, then
+for each light source, we shoot another ray
+whose origin V' is just
+the surface point S, and whose direction W' is the direction toward that light source L<sub>i</sub>.
+<p>
+We want to make sure that the ray misses the object
+we are starting from, so we move the origin V' of our
+new ray slightly out of the surface toward the light source.  Our "shadow ray" will therefore be:
+</p><blockquote>
+   V' = S + &#949; L<sub>i</sub>
+   <p>
+   W' = L<sub>i</sub>
+</p></blockquote>
+where &#949; can be any tiny positive value, such as 0.001.
+<p>
+If this shadow ray encounters any other object, then
+the surface is in shadow at this pixel, and we
+do not add in the diffuse and specular components of surface reflectance.
+</p><p>
+To the right above is an example of the surface not being in shadow.
+Just below that is an example of a surface being in shadow, because
+its light path is blocked by another object.
+</p></blockquote>
+
+</font></td><td width="50">&nbsp;</td><td width="30%">
+<img src="./0930_files/shadow1.png" width="200">
+<br>
+<img src="./0930_files/shadow2.png" width="170">
+</td>
+</tr></tbody></table>
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+
+
+
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+</p><p><table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+
+<p><b>Reflection</b></p><p>
+
+</p><blockquote>
+Another great thing about ray tracing is that we can
+continue to follow the path of a light ray backward from
+the camera, to model the behavior of mirror reflection.
+Adapting the technique that we used to
+calculate the reflection direction R for the Phong reflectance model,
+but replacing L in that equation by -W (the direction back along the incoming ray):
+<blockquote>
+   W' = 2 (N • (-W)) N - (-W)
+</blockquote>
+we can compute a new ray that starts at surface point S,
+and goes into that reflected direction:
+<blockquote>
+   V' = S + &#949; W'
+</blockquote>
+As shown in the figure on the right, we want to offset the
+origin of this ray a bit out of the surface, so that the ray
+does not accidentally encounter the object itself.
+<p>
+
+Whatever color is computed by this ray, we mix it into
+the result of the Phong reflectance algorithm.
+The result is the appearance of a shaded surface with a mirror finish.
+
+</p></blockquote>
+
+</font></td><td width="50">&nbsp;</td><td width="30%">
+<img src="./0930_files/reflection.png" width="300">
+</td>
+</tr></tbody></table>
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+
+
+
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+</p><p><table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+
+<p><b>Boolean intersection</b></p><p>
+
+</p><blockquote>
+Another nice thing about ray tracing is that we can use it to do <i>boolean modeling</i>,
+as we discussed in class.
+For example, given two spheres A and B, we can compute the intersection (if any)
+of those spheres by calculating their intersection along the ray.
+<p>
+Suppose, along a given ray, the values of t when entering and exiting
+sphere A are A<sub>in</sub> and A<sub>out</sub>, respectively.
+</p><p>
+Also suppose that along this ray the values of t when entering and exiting
+sphere B are B<sub>in</sub> and B<sub>out</sub>, respectively.
+</p><p>
+Then the intersection of the two shapes, along the ray, is given
+by the maximum of the enter (in) values and the minimum of the exit (out) values:
+</p><blockquote>
+   t<sub>in</sub> of entry into intersection shape = max(A<sub>in</sub> , B<sub>in</sub>)
+   <br>
+   t<sub>out</sub> of exit from intersection shape = min(A<sub>out</sub> , B<sub>out</sub>)
+</blockquote>
+If t<sub>in</sub> &lt; 
+t<sub>out</sub>,
+then the ray has intersected the intersection shape.
+Otherwise, the ray has missed the intersection shape.
+<p>
+
+To shade the resulting intersection shape at a pixel,
+we need to use the normal of the surface that was actually hit by the ray.
+For example, if A<sub>in</sub> &gt; B<sub>in</sub>,
+then we need to use the surface normal of A.
+</p></blockquote>
+
+</font></td><td width="50">&nbsp;</td><td width="30%">
+<img src="./0930_files/boolean.png" width="300">
+</td>
+</tr></tbody></table>
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+
+
+
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+
+<p><b>Refraction</b></p><p>
+
+</p><blockquote>
+
+In the real world many materials, such as oil, water, plastic, glass and diamond, are transparent.
+A transparent material has an <i>index of refraction</i> which measures how much light
+slows down as it enters that medium.
+For example, the index of refraction of water is about 1.333,
+of glass is about 1.5. The index of refraction of diamond, the substance with
+the highest known index of refraction, is 2.42.
+<p>
+As in the diagram to the right,
+you can add refraction to your ray tracing by following Snell's law:
+</p><blockquote>
+   n1 / n2 = sin(&#952;1) / sin(&#952;2)
+</blockquote>
+to determine how much the ray should bend as it enters or exits a transparent object.
+<p>
+Note that you will need to change your ray tracing model to incorporate refraction.
+In addition to your initial incoming ray, and any shadow or reflection rays, you also
+need to add a refraction ray, which starts just inside the surface, and continues
+inward.
+</p><p>
+
+Note that if you have ray traced to a sphere,
+and are now computing where the refracting ray will exit that sphere,
+you will want to compute the <i>second</i> root of the quadratic equation.
+</p><p>
+Then, after this refracting ray has exited out the back of the transparent sphere,
+you will want to compute how much it refracts on its way out, and then
+shoot a ray from there into the scene behind the sphere.
+</p><p>
+
+In general, you use the results of refraction by mixing the color it returns
+together with whatever surface color you have computed due to pure reflection or
+blinn/phong reflectance.
+
+</p></blockquote>
+
+</font></td>
+
+<td width="50">&nbsp;</td><td width="30%">
+<img src="./0930_files/refraction.png" width="300">
+</td>
+
+</tr></tbody></table>
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+
+
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+</p><p><b>Homework (due before class on Wednesday Oct 8)</b></p><p>
+
+</p><ul>
+<li> Implement either the Phong or the Blinn reflectance model.
+<p>
+</p></li><li> Implement shadows.
+<p>
+</p></li><li> Implement boolean intersection between two spheres.
+<p>
+</p></li><li> Extra credit:
+<blockquote>
+<ul>
+<li> Implement both Phong and Blinn reflectdance.
+<p>
+</p></li><li> Implement reflection.
+<p>
+</p></li><li> Implement refraction.
+<p>
+</p></li><li> Implement boolean intersection between more than two spheres.
+<p>
+</p></li></ul>
+</blockquote>
+<p>
+</p></li><li> As always, make something cool and fun, try to create something interactive (using uCursor) and/or animated (using uTime).
+</li></ul>
+
+</font></td>
+</tr></tbody></table>
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+
+
+
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+<hr color="white" size="1000">
+
+&nbsp;
+</body></html>

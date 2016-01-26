@@ -1,0 +1,554 @@
+<body bgcolor=black text=white link=white alink=white vlink=white>
+
+<hr color=black size=75><table><tr><td width=75></td><td>
+<font face=helvetica>
+<center><big><b>
+
+Notes for October 7 class -- Introduction to matrices
+
+</b></big></center>
+<hr color=black size=50>
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+
+
+
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<table><tr>
+<td width=80%>
+<font face=helvetica>
+<p><b>Homogeneous coordinates</b><p>
+<blockquote>
+We can deal with both points in a scene and directions (which are essentially points at infinity)
+by adding an extra coordinate, which we call the <i>homogeneous coordinate</i>.
+<p>
+For example, in two dimensions, we would write [x,y,w]
+to represent (x/w, y/w).
+<p>
+In the example to the right, we have both points and directions.
+The point at (1,0) is represented by [1,0,1],
+whereas the direction vector (1,0) (shown in <b><font color=red>red</font></b>)
+is represented by [1,0,0].
+<p>
+By convention we place all points on the w=1 plane (shown in gray),
+although scaling arbitrarily to [cx,cy,cz] still describes the
+same point (x/w, y/w), as shown by the upward slanting arrows in the figure.
+</blockquote>
+</td>
+<td width=50>&nbsp;</td><td width=400>
+<img src=imgs/projective.png width=400>
+</td>
+</tr></table>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<table><tr>
+<td width=80%>
+<font face=helvetica>
+<p><b>Coordinate transformations</b><p>
+<blockquote>
+The default coordinate system in three dimensions has
+coordinate axes [1,0,0,0], [0,1,0,0] and [0,0,1,0], respectively
+(the x, y and z global direction vectors).
+<p>
+Its origin is
+[0,0,0,1] (the point (0,0,0)),
+as shown in the figure to the right in <b>black</b>.
+<p>
+We can describe a <i>transformed</i> coordinate system
+by redefining each of the x, y and z axes,
+and by translating the origin to point t,
+as shown in the figure to the right in <b><font color=#0080b8>blue</font></b>.
+<p>
+Note that this is a very general representation.
+For example, the new x, y and z directions
+do not need to be perpendicular to each other.
+Nor do they need to be unit length.
+For 
+</blockquote>
+</td>
+<td width=50>&nbsp;</td><td width=400>
+<table width=400><tr><td width=50></td>
+<td><img src=imgs/xyzt.png width=300></td>
+<td width=50></td></table>
+</td>
+</tr></table>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<table><tr>
+<td width=80%>
+<font face=helvetica>
+<p><b>Transformation matrices</b><p>
+<blockquote>
+All of the information of a coordinate transformation
+can be placed in a 4&#215;4 matrix, as shown in the
+figure to the right.
+<p>
+The x, y and z axes form the first three respective
+columns of the matrix.
+<p>
+The origin t forms the right-most column of the matrix.
+<p>
+In this class we will follow the convention of storing
+the 16 matrix values in <i>row-major</i> order:
+<blockquote>
+[
+x<sub>0</sub>,
+x<sub>1</sub>,
+x<sub>2</sub>,
+x<sub>3</sub>,
+&nbsp;
+y<sub>0</sub>,
+y<sub>1</sub>,
+y<sub>2</sub>,
+y<sub>3</sub>,
+&nbsp;
+z<sub>0</sub>,
+z<sub>1</sub>,
+z<sub>2</sub>,
+z<sub>3</sub>,
+&nbsp;
+t<sub>0</sub>,
+t<sub>1</sub>,
+t<sub>2</sub>,
+t<sub>3</sub>
+]
+</blockquote>
+</blockquote>
+</td>
+<td width=250>&nbsp;</td><td width=400>
+<table width=400><tr><td width=100></td>
+<td><img src=imgs/xyzt_matrix.png width=200></td>
+<td width=100></td></table>
+</td>
+</tr></table>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<table><tr>
+<td width=80%>
+<font face=helvetica>
+<p><b>Transforming a point</b><p>
+<blockquote>
+We can use a 4&#215;4 matrix to transform a vector.
+<p>
+By convention, we represent the input as a column vector, and place it to the right of the matrix.
+<p>
+Also, by convention, if we leave out the fourth (homogeneous) coordinate of the input,
+we assume a value of 1.0 for its homogeneous coordinate,
+unless otherwise specified.
+<p>
+The result of the transformation is another column vector,
+which we obtain by taking the inner product
+of each successive row of the matrix with the input vector.
+<p>
+In this case, the matrix is rotating the point (1,0,0) about the z axis.
+</blockquote>
+</td>
+<td width=50>&nbsp;</td><td width=400>
+<img src=imgs/matrix_vector.png width=400>
+</td>
+</tr></table>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<table><tr>
+<td width=80%>
+<font face=helvetica>
+<p><b>The identity transformation</b><p>
+<blockquote>
+The identity matrix is the "do nothing" transformation.
+<p>
+It will transform any point or direction to itself.
+You generally want to call the identity() method on a matrix
+object to initialize that matrix.
+</blockquote>
+</td>
+<td width=50>&nbsp;</td><td width=400>
+<img src=imgs/midentity.png width=400>
+</td>
+</tr></table>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<table><tr>
+<td width=80%>
+<font face=helvetica>
+<p><b>The translate transformation</b><p>
+<blockquote>
+To translate a point, we use only the right-most column of the matrix.
+The rest of the matrix is the same as the identity matrix.
+<p>
+Note that translation affects only points, not directions.
+Because the homogeneous coordinate of a direction is zero,
+its value cannot be affected by the right-most column of the matrix.
+</blockquote>
+</td>
+<td width=50>&nbsp;</td><td width=400>
+<img src=imgs/mtranslate.png width=400>
+</td>
+</tr></table>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<table><tr>
+<td width=80%>
+<font face=helvetica>
+<p><b>Rotate about the x axis</b><p>
+<blockquote>
+Rotation about the x axis only affects the y and z axes.
+<p>
+"Positive" rotation is counterclockwise
+when looking from the positive x direction.
+</blockquote>
+</td>
+<td width=50>&nbsp;</td><td width=400>
+<img src=imgs/mrotatex.png width=400>
+</td>
+</tr></table>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<table><tr>
+<td width=80%>
+<font face=helvetica>
+<p><b>Rotate about the y axis</b><p>
+<blockquote>
+Rotation about the y axis only affects the z and x axes.
+<p>
+"Positive" rotation is counterclockwise
+when looking from the positive y direction.
+</blockquote>
+</td>
+<td width=50>&nbsp;</td><td width=400>
+<img src=imgs/mrotatey.png width=400>
+</td>
+</tr></table>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<table><tr>
+<td width=80%>
+<font face=helvetica>
+<p><b>Rotate about the z axis</b><p>
+<blockquote>
+Rotation about the z axis only affects the x and y axes.
+<p>
+"Positive" rotation is counterclockwise
+when looking from the positive z direction.
+</blockquote>
+</td>
+<td width=50>&nbsp;</td><td width=400>
+<img src=imgs/mrotatez.png width=400>
+</td>
+</tr></table>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<table><tr>
+<td width=80%>
+<font face=helvetica>
+<p><b>The scale transformation</b><p>
+<blockquote>
+Like rotation, a scale transformation (which makes shapes bigger or smaller)
+only uses the top-left 3&#215;3 portion of the 4#215;4 matrix.
+<p>
+In this case we are performing a <i>uniform</i>
+scale, by using the same values for the three locations
+along the diagonal of the matrix.
+<p>
+If we were to use differing values at these three locations,
+then we would perform a non-uniform scale,
+which would result in the shape becoming squashed or stretched.
+</blockquote>
+</td>
+<td width=50>&nbsp;</td><td width=400>
+<img src=imgs/mscale.png width=400>
+</td>
+</tr></table>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<b>For this week's assignment, we will define a shape as:</b>
+
+<ul>
+<li>A list of vertices
+<li>A list of edges
+</ul>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<b>Example: A square</b>
+
+<ul>
+<li><i><b>Vertices:</b></i>
+<p>
+<blockquote>
+As an array of arrays:
+<p>
+<ol start=0>
+<li>[-1,-1, 0],<li> [ 1,-1, 0],<li> [-1, 1, 0],<li> [ 1, 1, 0]
+</ol>
+</blockquote>
+
+<blockquote>
+Or as an array of objects (more flexible):
+<p>
+<ol start=0>
+<li>new Vector3(-1,-1,0);
+<li>new Vector3( 1,-1,0);
+<li>new Vector3(-1, 1,0);
+<li>new Vector3( 1, 1,0);
+</ol>
+</blockquote>
+<p>
+
+<li><i><b>Edges (an array of pairs of vertex indices):</b></i>
+
+<p>
+<blockquote>
+[0,1], [1,3], [3,2], [2,0]
+</blockquote>
+</ul>
+
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<b>Example: A cube</b>
+
+<ul>
+<li><i><b>Vertices</b></i>:
+<blockquote>
+<p>
+<ol start=0>
+<li>new Vector3(-1,-1,-1);
+<li>new Vector3( 1,-1,-1);
+<li>new Vector3(-1, 1,-1);
+<li>new Vector3( 1, 1,-1);
+<li>new Vector3(-1,-1, 1);
+<li>new Vector3( 1,-1, 1);
+<li>new Vector3(-1, 1, 1);
+<li>new Vector3( 1, 1, 1);
+</ol>
+</blockquote>
+<p>
+<p>
+<li><i><b>Edges</b></i>:
+</ul>
+
+<blockquote>
+<blockquote>
+Left as an exercise for the reader. <big>&#9786;</big>
+</blockquote>
+</blockquote>
+
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<b>Viewport transformation:</b>
+<p>
+<blockquote>
+
+<i><b>You'll want to do all your 3D modeling and matrix math in "model space":</b></i>
+<blockquote>
+Values go from -1...+1 in both x and y.
+</blockquote>
+<p>
+
+<i><b>But you will need to do your drawing as pixels in "image space":</b></i>
+<blockquote>
+Values go from 0...canvas.width in x (left to right).
+<br>
+Values go from 0...canvas.height in y (top to bottom).
+</blockquote>
+
+<i><b>To transform from 3D modeling space to pixels in image space:</b></i>
+<blockquote>
+<pre>
+px = (width  / 2) + x * (width / 2);
+py = (height / 2) - y * (width / 2);
+</pre>
+</blockquote>
+
+</blockquote>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<b>The HTML5 Canvas object:</b>
+<p>
+
+<blockquote>
+For this assignment you will really need to know only
+the following few Canvas methods:
+<blockquote>
+<big><code>
+beginPath(), moveTo(x,y), lineTo(x,y), stroke()
+</big></code>
+</blockquote>
+But you might be interested in exploring the full
+power of the Canvas object.
+<p>
+By following this link you can find a
+<a href=http://www.w3schools.com/tags/ref_canvas.asp target=1>comprehensive reference</a>
+to the methods available to you for drawing on an HTML5 Canvas.
+<p>
+</blockquote>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<b>Examples we started in class:</b>
+<p>
+Both of the below interactive diagrams make use of
+my little convenience library
+<a href=drawlib1.js target=1>drawlib1.js</a>.
+<p>
+To see how the diagrams themselves are implemented you can
+look at the Javascript source for this page:
+<blockquote>
+In <b>Chrome</b>: <u>View</u> &rarr; <u>Developer</u> &rarr; <u>View Source</u>
+<p>
+In <b>Firefox</b>: <u>Tools</u> &rarr; <u>Web Developer</u> &rarr; <u>Page Source</u>
+<p>
+In <b>Safari</b>: <u>Develop</u> &rarr; <u>Show Page Source</u>
+</blockquote>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<table>
+<tr>
+<td><canvas id=canvas1 width=300 height=200></td>
+<td width=50></td>
+<td valign=top>
+Here is where you would put a description of what you
+are trying to explain with this animated diagram.
+<p>
+For example,
+in this case I am showing how to use
+<b><big><code>cursor.x</code></big></b>
+and
+<b><big><code>cursor.y</code></big></b>
+to position a square, while using
+<b><big><code>cursor.z</code></big></b>
+(the indicator of whether the mouse button is pressed)
+to change the color of the square.
+</td>
+</tr>
+
+<tr>
+<td><canvas id=canvas2 width=300 height=200></td>
+<td width=50></td>
+<td valign=top>
+Here is where you would put a description of what you
+are trying to explain with this animated diagram.
+<p>
+For example, here I am showing how to animate
+on object using variable
+<b><big><code>time</code></big>.</b>
+</td>
+</tr>
+</table>
+
+<script src=drawlib1.js></script>
+<script>
+   var canvas = initCanvas('canvas1');
+   canvas.update = function(g) {
+      g.fillStyle = this.cursor.z ? 'red' : 'rgb(255,255,128)';
+      g.beginPath();
+      var x = this.cursor.x, y = this.cursor.y;
+      g.moveTo(x-50,y-50);
+      g.lineTo(x+50,y-50);
+      g.lineTo(x+50,y+50);
+      g.lineTo(x-50,y+50);
+      g.fill();
+
+      g.strokeStyle = 'blue';
+      g.beginPath();
+      g.moveTo(0,0);
+      g.lineTo(this.width,0);
+      g.lineTo(this.width,this.height);
+      g.lineTo(0,this.height);
+      g.lineTo(0,0);
+      g.stroke();
+   }
+
+   var canvas = initCanvas('canvas2');
+   canvas.update = function(g) {
+      g.strokeStyle = 'blue';
+      g.beginPath();
+      g.moveTo(0,0);
+      g.lineTo(this.width,0);
+      g.lineTo(this.width,this.height);
+      g.lineTo(0,this.height);
+      g.lineTo(0,0);
+      g.stroke();
+
+      g.strokeStyle = 'red';
+      g.beginPath();
+      var x = this.width/2, y = this.height/2;
+      g.moveTo(x - 50, y);
+      g.lineTo(x + 50, y);
+      g.moveTo(x + 50 * Math.sin(Math.PI * time), y);
+      g.lineTo(this.cursor.x, this.cursor.y);
+      g.stroke();
+   }
+</script>
+
+<p>&nbsp;<p><hr>&nbsp;<p>
+
+<p><b>Homework (due before class on Wednesday Mar 11)</b><p>
+
+<blockquote>
+
+Create a Matrix object class in Javascript.
+For that class, implement the following methods:
+<blockquote>
+<pre><big>
+identity()
+translate(x, y, z)
+rotateX(theta)
+rotateY(theta)
+rotateZ(theta)
+scale(x, y, z)
+transform(src, dst) // arguments are vectors
+</big></pre>
+</blockquote>
+<br>&nbsp;<br>
+
+Show that you have these working by creating
+the vertices and edges of some cool shape or set of shapes,
+applying matrix transformations to them every
+animation frame,
+and showing the result by drawing on a Canvas to create an animated diagram.
+<p>
+
+You will get extra credit
+if you create something really beautiful or
+interestingly interactive,
+maybe that tells a story or forms a fun game or puzzle.
+
+</blockquote>
+
+</td>
+</tr></table>
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+
+
+
+
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
+<hr color=black size=1000>
+</font>
+</td><td width=75>&nbsp;</td></tr></table>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Assignment 7 - A lonely hermite</title>
+	<script src="assignment7.js"></script>
+</head>
+
+<body>
+	<table>
+		<tr>
+			<td>
+				<canvas id="canvas1" width="600" height="600">
+			</td>
+			<td width="50"></td>
+			<td valign="top">
+				This is as far as I could get with hermite splines... 
+				<br>
+				You can click on the control points to move them.
+			</td>
+		</tr>
+	</table>
+	<script>
+	// var a = [[1, 0, 0 ,0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
+	// var b = [1, 0, 1, 0];
+
+	var canvas = initCanvas('canvas1');
+	var isClicked = false;
+	var clickedEl = '';
+
+	var controlOne = new Decartes.Control(0.5, 0.5);
+	var controlTwo = new Decartes.Control(-0.5, -0.5);
+
+
+	hermite = new Decartes.Hermite();
+	hermite.setPoints(controlOne, controlTwo);
+	hermite.render(100);
+
+	var torus = new Decartes.Sphere().scale(0.2, 0.2, 0.2);
+	torus.translate(hermite.xPosition[0]*5, hermite.yPosition[0]*5, 0);
+	var posCount = 0;
+	var isDecrementing = false;
+
+	canvas.update = function(g) {
+		g.lineWidth = 2;
+		g.strokeStyle = "black";
+
+		hermite.draw(g, canvas.width, canvas.height);
+		controlOne.draw(g, canvas.width, canvas.height);
+		controlTwo.draw(g, canvas.width, canvas.height);
+
+		if(canvas.cursor.z === 1 && !isClicked){
+			var distOne = Math.pow((controlOne.positionPoint.canvasCoord[0] - canvas.cursor.x),2) + Math.pow((controlOne.positionPoint.canvasCoord[1] - canvas.cursor.y),2);
+			var distTwo = Math.pow((controlTwo.positionPoint.canvasCoord[0] - canvas.cursor.x),2) + Math.pow((controlTwo.positionPoint.canvasCoord[1] - canvas.cursor.y),2);
+			var distThree = Math.pow((controlOne.tangentPoint.canvasCoord[0] - canvas.cursor.x),2) + Math.pow((controlOne.tangentPoint.canvasCoord[1] - canvas.cursor.y),2);
+			var distFour = Math.pow((controlTwo.tangentPoint.canvasCoord[0] - canvas.cursor.x),2) + Math.pow((controlTwo.tangentPoint.canvasCoord[1] - canvas.cursor.y),2);
+			if(distOne < 100){
+				clickedEl = "one";
+			} else if(distTwo < 100){
+				clickedEl = "two";
+			} else if(distThree < 100){
+				clickedEl = "three";
+			} else if(distFour < 100){
+				clickedEl = "four";
+			} else{
+				clickedEl = "";
+			}
+			isClicked = true;
+		}
+		if(canvas.cursor.z === 0){
+			isClicked = false;
+		}
+		if(isClicked) {
+			switch(clickedEl) {
+				case "one":
+					controlOne.updatePosition((canvas.cursor.x - 300)/300, (canvas.cursor.y - 300)/-300);
+					hermite.setPoints(controlOne, controlTwo);
+					hermite.render(100);
+					break;
+				case "two":
+					controlTwo.updatePosition((canvas.cursor.x - 300)/300, (canvas.cursor.y - 300)/-300);
+					hermite.setPoints(controlOne, controlTwo);
+					hermite.render(100);
+					break;
+				case "three":
+					controlOne.updateTangent((canvas.cursor.x - 300)/300, (canvas.cursor.y - 300)/-300);
+					hermite.setPoints(controlOne, controlTwo);
+					hermite.render(100);
+					break;
+				case "four":
+					controlTwo.updateTangent((canvas.cursor.x - 300)/300, (canvas.cursor.y - 300)/-300);
+					hermite.setPoints(controlOne, controlTwo);
+					hermite.render(100);
+					break;
+			}
+		}
+		if(posCount > hermite.xPosition.length){
+			isDecrementing = true;
+		} else if (posCount < 0){
+			isDecrementing = false;
+		}
+		torus.matrix = Decartes.Matrix.identity();
+		torus.scale(0.2, 0.2, 0.2);
+		torus.translate(hermite.xPosition[posCount]*5, hermite.yPosition[posCount]*5, 0);
+		torus.draw(g, canvas.width, canvas.height);
+		if(isDecrementing){
+			posCount --;
+		} else {
+			posCount ++;
+		}
+		console.log(posCount);
+	};
+
+	</script>
+</body>
+
+</html>

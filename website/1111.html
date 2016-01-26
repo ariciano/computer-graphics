@@ -1,0 +1,73 @@
+
+<!-- saved from url=(0050)https://mrl.nyu.edu/~perlin/courses/fall2015/1111/ -->
+<html class=""><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><style type="text/css">.fancybox-margin{margin-right:0px;}</style><style type="text/css"></style><link rel="stylesheet" type="text/css" href="chrome-extension://pkehgijcmpdhfbdbbnkijodmdjhbjlgp/skin/socialwidgets.css"></head><body><hr color="white" size="75"><table><tbody><tr><td width="75"></td><td>
+<font face="helvetica">
+<center><big><b>
+
+Notes for November 11 class -- More WebGL
+
+</b></big></center>
+<hr color="white" size="50">
+
+<table><tbody><tr>
+<td width="80%">
+<font face="helvetica">
+In class we went over more advanced features of WebGL.
+But for this coming Wednesday we are going to keep things simple.
+Starting from the example I posted last week,
+for your homework due Wednesday Nov 18
+I would like you to
+create non-trivial 3D shapes using triangle strips.
+You should make at least the following three shapes:
+sphere, cylindrical tube and torus (donut).
+<p>
+If you want to get more ambitious and create more interesting
+shapes (eg: see whether you can make use of splines), feel free to do so.
+Those more advanced shapes will come in handy in the weeks to come.
+</p><p>
+Also, if you are feeling ambitious, you can start to add normals to your vertices,
+passing in vertices as groups of six values rather than three.
+</p><p>
+To make that work (as we described in class), you will need to replace the lines:
+</p><pre>   var attr = gl.getAttribLocation(prog, 'aPos');
+   gl.enableVertexAttribArray(attr);
+   gl.vertexAttribPointer(attr, 3, gl.FLOAT, false, 0, 0);
+</pre>
+by something like:
+<pre>   var posAttr    = gl.getAttribLocation(prog, 'aPos');
+   var normalAttr = gl.getAttribLocation(prog, 'aNormal');
+   gl.enableVertexAttribArray(posAttr);
+   gl.enableVertexAttribArray(normalAttr);
+   var bpe = Float32Array.BYTES_PER_ELEMENT;
+   gl.vertexAttribPointer(posAttr   , 3, gl.FLOAT, false, 6 * bpe, 0);
+   gl.vertexAttribPointer(normalAttr, 3, gl.FLOAT, false, 6 * bpe, 3 * bpe);
+</pre>
+and also add a declaration for <code>vec3 aNormal</code> into your vertex shader.
+<p>
+If you are feeling <i>really</i> ambitious,
+you can try passing those normal values down to your fragment shader,
+and use them to shade your 3D shapes:
+</p><pre>   <i><b>// in vertex shader</b></i>
+
+   attribute vec3 aNormal;
+   varying vec3 vNormal;
+   main() {
+       vNormal = aNormal;
+       ...
+   }
+
+   ...
+
+   <i><b>// in fragment shader</b></i>
+   
+   vec3 uNormal;
+   main() {
+      vec3 normal = normalize(vNormal);
+      ...
+   }
+</pre>
+
+</font></td>
+</tr>
+</tbody></table>
+</font></td></tr></tbody></table></body></html>
